@@ -7,7 +7,7 @@ export async function getMoodByDate(
   id: string
 ): Promise<Mood | null> {
   const { rows } = await pool.query(
-    'SELECT * FROM moods WHERE date = $1 AND id = $2',
+    'SELECT * FROM moods WHERE date = $1 AND user_id = $2',
     [date, id]
   )
   return rows[0] || null
