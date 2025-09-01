@@ -23,7 +23,7 @@ app.use('/mood', moodRoutes)
 app.use('/user', userRoutes)
 
 // Only for render hosting
-app.get('/', (req, res) => {
+app.get('/wakeup', (req, res) => {
   res.status(200).send('Wake up!')
 })
 
