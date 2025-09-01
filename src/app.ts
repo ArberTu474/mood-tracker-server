@@ -22,4 +22,9 @@ app.get('/', getAllMoods)
 app.use('/mood', moodRoutes)
 app.use('/user', userRoutes)
 
+// Only for render hosting
+app.get('/', (req, res) => {
+  res.status(200).send('Wake up!')
+})
+
 export default app
