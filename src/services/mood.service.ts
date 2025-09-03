@@ -1,6 +1,7 @@
 import { DailyMood } from 'types/daily-mood'
 import pool from '../config/db'
 import { type Mood } from '../types/mood'
+import { formatDateYYYYMMDD } from '../lib/utils'
 
 export async function getMoodByDate(
   date: string,
@@ -11,6 +12,35 @@ export async function getMoodByDate(
     [date, id]
   )
   return rows[0] || null
+}
+
+export async function getMoodsOfTheMonth(
+  month: string,
+  year: string,
+  id: string
+): Promise<(Mood | null)[] | null> {
+  const currentMonth = Number(month) - 1
+  const currentYear = Number(year)
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
+  const firstDay = formatDateYYYYMMDD(new Date(currentYear, currentMonth, 1))
+  const lastDay = formatDateYYYYMMDD(new Date(currentYear, currentMonth + 1, 0))
+
+  const { rows } = await pool.query(
+    'SELECT mood, date FROM moods WHERE user_id = $1 AND date >= $2 AND date <= $3 ORDER BY date;',
+    [id, firstDay, lastDay]
+  )
+
+  const moods: (Mood | null)[] = new Array(daysInMonth).fill(null)
+
+  rows.forEach((row) => {
+    const date = new Date(row.date)
+    const dayOfMonth = date.getDate()
+
+    moods[dayOfMonth - 1] = row
+  })
+
+  return moods || null
 }
 
 export async function getAllMoods(): Promise<Mood[] | null> {

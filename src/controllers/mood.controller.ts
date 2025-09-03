@@ -17,6 +17,22 @@ export async function getMood(req: Request, res: Response) {
   }
 }
 
+export async function getMonthsMoods(req: Request, res: Response) {
+  const { month, year, id } = req.params
+
+  try {
+    const moods = await moodService.getMoodsOfTheMonth(month, year, id)
+
+    if (!moods) {
+      return res.status(404).json({ message: 'Mood not found' })
+    }
+
+    res.json(moods)
+  } catch (error) {
+    res.status(500).json({ message: error.message || 'Internal server error' })
+  }
+}
+
 export async function createMood(req: Request, res: Response) {
   const { userId } = req.params
 
