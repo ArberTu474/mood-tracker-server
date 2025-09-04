@@ -43,8 +43,6 @@ export async function createMood(req: Request, res: Response) {
       return res.status(404).json({ message: 'Mood was not created' })
     }
 
-    console.log(mood)
-
     res.json({ message: 'Mood created' })
   } catch (error) {
     res.status(500).json({ message: error.message || 'Internal server error' })
@@ -55,8 +53,6 @@ export async function createMood(req: Request, res: Response) {
 export async function getAllMoods(req: Request, res: Response) {
   try {
     const moods = await moodService.getAllMoods()
-
-    console.log(moods)
 
     if (!moods) {
       return res.status(404).json({ message: 'Mood not found' })
@@ -72,10 +68,6 @@ export async function updateMood(req: Request, res: Response) {
   const newData = req.body as DailyMood
   const { date, id } = req.params
 
-  console.log('hello')
-  console.log('params', id, date)
-
-  console.log(date)
   try {
     const moodUpdate = await moodService.updateMood(date, id, newData)
 
@@ -84,8 +76,6 @@ export async function updateMood(req: Request, res: Response) {
     }
 
     res.json(moodUpdate)
-
-    console.log(moodUpdate)
   } catch (error) {
     res.status(500).json({ message: error.message || 'Can not update mood' })
   }

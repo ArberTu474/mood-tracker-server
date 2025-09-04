@@ -45,7 +45,7 @@ export async function getMoodsOfTheMonth(
 
 export async function getAllMoods(): Promise<Mood[] | null> {
   const { rows } = await pool.query('SELECT * FROM moods;')
-  console.log(rows)
+
   return rows || null
 }
 
@@ -54,7 +54,7 @@ export async function createMood(reqData: DailyMood): Promise<Mood[] | null> {
     'INSERT INTO moods(user_id, mood, reflection) VALUES($1, $2, $3);',
     [reqData.userId, reqData.mood, reqData.reflection]
   )
-  console.log(rows)
+
   return rows || null
 }
 
@@ -83,7 +83,6 @@ export async function updateMood(
 
   query += ' RETURNING *' // return the updated row/s
 
-  console.log(query)
   const { rows } = await pool.query(query, params)
   return rows || null
 }
