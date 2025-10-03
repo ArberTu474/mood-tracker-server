@@ -17,6 +17,37 @@ export async function getMood(req: Request, res: Response) {
   }
 }
 
+export async function getReflection(req: Request, res: Response) {
+  const { date, id } = req.params
+
+  try {
+    const reflection = await moodService.getReflection(date, id)
+
+    if (!reflection) {
+      return res.status(404).json({ message: 'Reflection not found' })
+    }
+    res.json(reflection)
+  } catch (error) {
+    res.status(500).json({ message: error.message || 'Internal server error' })
+  }
+}
+
+export async function updateReflection(req: Request, res: Response) {
+  const newReflection: { reflection: string } = req.body
+  const { date, id } = req.params
+
+  try {
+    const reflection = await moodService.updateReflection(newReflection, date, id)
+
+    if (!reflection) {
+      return res.status(404).json({ message: 'Reflection not found' })
+    }
+    res.json(reflection)
+  } catch (error) {
+    res.status(500).json({ message: error.message || 'Internal server error' })
+  }
+}
+
 export async function getMonthsMoods(req: Request, res: Response) {
   const { month, year, id } = req.params
 

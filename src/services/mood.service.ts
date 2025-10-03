@@ -14,6 +14,30 @@ export async function getMoodByDate(
   return rows[0] || null
 }
 
+export async function getReflection(
+  date: string,
+  id: string
+): Promise<Mood | null> {
+  const { rows } = await pool.query(
+    'SELECT reflection FROM moods WHERE date = $1 AND user_id = $2',
+    [date, id]
+  )
+  return rows[0] || null
+}
+
+export async function updateReflection(
+  newReflaction: { reflection: string },
+  date: string,
+  id: string
+): Promise<string | null> {
+  const { reflection } = newReflaction
+  const { rows } = await pool.query(
+    'UPDATE moods SET reflection = $1 WHERE date = $2 AND user_id = $3 RETURNING reflection',
+    [reflection, date, id]
+  )
+  return rows[0] || null
+}
+
 export async function getMoodsOfTheMonth(
   month: string,
   year: string,
@@ -27,7 +51,7 @@ export async function getMoodsOfTheMonth(
   const lastDay = formatDateYYYYMMDD(new Date(currentYear, currentMonth + 1, 0))
 
   const { rows } = await pool.query(
-    'SELECT mood, date FROM moods WHERE user_id = $1 AND date >= $2 AND date <= $3 ORDER BY date;',
+    'SELECT mood, date, reflection FROM moods WHERE user_id = $1 AND date >= $2 AND date <= $3 ORDER BY date;',
     [id, firstDay, lastDay]
   )
 
@@ -39,6 +63,7 @@ export async function getMoodsOfTheMonth(
 
     moods[dayOfMonth - 1] = row
   })
+  console.log(moods)
 
   return moods || null
 }
